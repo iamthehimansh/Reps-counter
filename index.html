@@ -200,9 +200,9 @@
                 document.getElementById('start').play();
                 for(let j=0;j<time;j++){
 
-                    await sleep(1000);
+                  await sleep(1000);
+                  t++;
                     display(r,reps,t,time);
-                    t++;
                 }
                 t=0;
                 r++;
