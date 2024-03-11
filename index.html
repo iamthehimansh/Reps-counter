@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reps Counter</title>
+    <style>
+        body {
+  font-family: 'Montserrat', sans-sherif;
+  background-image: linear-gradient(120deg, #fdfbfb 0%, #ebedee 100%);
+  background-repeat: no-repeat;
+  height: 100vh;
+  color: #555555;
+  overflow: hidden;
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.action{
+    overflow: hidden;    
+  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  background-color: #ffffff;
+  margin: 0 20px;
+  width: 280px;
+  height: 350px;
+  border-radius: 5px;
+  box-shadow: 0 10px 20px -10px rgba(0, 0, 0, 0.2);
+}
+
+.card .percent {
+  position: relative;
+}
+
+.card svg {
+  position: relative;
+  width: 210px;
+  height: 210px;
+  transform: rotate(-90deg);
+}
+
+.card svg circle {
+  width: 100%;
+  height: 100%;
+  fill: none;
+  stroke: #f0f0f0;
+  stroke-width: 10;
+  stroke-linecap: round;
+}
+
+.card svg circle:last-of-type {
+  stroke-dasharray: 625px;
+  stroke-dashoffset: calc(625px - (625px * var(--percent)) / 100);
+  stroke: #3498db; 
+}
+
+.card .number {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.card .number h3 {
+  font-weight: 200;
+  font-size: 3.5rem;
+}
+.card .number h4 {
+  font-weight: 200;
+  font-size: 2rem;
+}
+.card .number h3 span {
+  font-size: 2rem;
+}
+
+.card .title h2 {
+  margin: 25px 0 0;
+}
+
+.card:nth-child(1) svg circle:last-of-type {
+  stroke: #f39c12;
+}
+
+.card:nth-child(2) svg circle:last-of-type {
+  stroke: #2ecc71;
+}
+
+
+
+/* mobile flex column and scroll enable */
+@media (max-width: 600px) {
+    body {
+        flex-direction: column;
+        overflow: auto;
+    }
+    .card {
+        margin: 20px 0;
+    }
+    .form{
+    display: flex;  
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.action{
+    flex-direction: column;
+}
+}
+
+
+
+    </style>
+</head>
+<body>
+    <div class="form">
+        <h1>Reps Counter</h1>
+        
+            <input type="number"  name="reps" id="reps" placeholder="Enter the number of reps" style="margin-bottom: 10px;">
+            <input type="number"  name="time" id="time" placeholder="Enter the time" style="margin-bottom: 10px;">
+            <input type="number"  name="rest" id="rest" placeholder="Enter the rest time" style="margin-bottom: 10px;">
+            <button  onclick="start()"  style="background-color: #4CAF50; color: white; padding: 10px 20px; border: none; cursor: pointer;">Start</button>
+            
+    </div>
+    <div class="action">
+        
+          
+    </div>
+    <audio id="stop" src="./relax.mp3" preload="auto"></audio>
+    <audio id="start" src="./start.mp3" preload="auto"></audio>
+    <audio id="done" src="./Done.mp3" preload="auto"></audio>
+
+
+
+
+    <script>
+        function display(r,tr,t,tt){
+            let v=`<div class="card">
+            <div class="percent">
+              <svg>
+                <circle cx="105" cy="105" r="100"></circle>
+                <circle cx="105" cy="105" r="100" style="--percent: ${(r/tr)*100}"></circle>
+              </svg>
+              <div class="number">
+                <h3>${r}/${tr}</h3>
+              </div>
+            </div>
+            <div class="title">
+              <h2>Reps</h2>
+            </div>
+          </div>
+          
+          <div class="card">
+            <div class="percent">
+              <svg>
+                <circle cx="105" cy="105" r="100"></circle>
+                <circle cx="105" cy="105" r="100" style="--percent: ${(t/tt)*100}"></circle>
+              </svg>
+              <div class="number">
+                <h3>${t}/${tt}s</h3>
+              </div>
+            </div>
+            <div class="title">
+              <h2>Timer</h2>
+            </div>
+          </div>
+          `
+          document.querySelector('.action').innerHTML=v;
+
+        //   <h4>10s left</h4>
+        }
+
+        //sleep function
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+
+        async function  start (){
+            reps=Number(document.getElementById('reps').value) || 10;
+            time=Number(document.getElementById('time').value) || 10;
+            rest=Number(document.getElementById('rest').value) || 5;
+            form=document.querySelector('.form');
+            form.style.display='none';
+            let r=0;
+            let t=0;
+            display(r,reps,t,time);
+            // setInterval(()=>{
+            //     display(r,reps,t,time);
+            //     document.querySelector('.action').innerHTML=v;
+            // },1000);
+            for(let i=0;i<reps;i++){
+                document.getElementById('start').play();
+                for(let j=0;j<time;j++){
+
+                    await sleep(1000);
+                    display(r,reps,t,time);
+                    t++;
+                }
+                t=0;
+                r++;
+                document.getElementById('stop').play();
+                await sleep(rest*1000);
+            }
+            r=0;
+            t=0;
+            display(r,reps,t,time);
+            form.style.display='block';
+            document.getElementById('done').play();
+        }
+    </script>
+</body>
+</html>
