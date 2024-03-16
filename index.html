@@ -197,7 +197,7 @@
             time=Number(document.getElementById('time').value) || 10;
             rest=Number(document.getElementById('rest').value) || 5;
             form=document.querySelector('.form');
-            form.style.display='flex';
+            form.style.display='none';
             let r=0;
             let t=0;
             display(r,reps,t,time);
@@ -221,7 +221,7 @@
             r=0;
             t=0;
             display(r,reps,t,time);
-            form.style.display='block';
+            form.style.display='flex';
             document.getElementById('done').play();
             document.querySelector('.action').innerHTML=""
         }
